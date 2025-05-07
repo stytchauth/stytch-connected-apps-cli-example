@@ -24,7 +24,7 @@ var (
 	clientID     string
 	projectID    string
 	redirectURI  = "http://localhost:8080/callback"
-	authorizeURL = "http://localhost:3000/authorize"
+	authorizeURL = "http://localhost:3000/oauth/authorize"
 )
 
 type TokenResponse struct {
