@@ -101,7 +101,7 @@ var authCmd = &cobra.Command{
 		}()
 
 		// Construct the auth URL with PKCE parameters
-		authURL := fmt.Sprintf("http://localhost:3000/authorize?client_id=%s&redirect_uri=%s&response_type=code&code_challenge=%s&code_challenge_method=S256",
+		authURL := fmt.Sprintf(authorizeURL+"?client_id=%s&redirect_uri=%s&response_type=code&code_challenge=%s&code_challenge_method=S256",
 			clientID, redirectURI, codeChallenge)
 
 		fmt.Println("Opening browser for authentication...")
