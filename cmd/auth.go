@@ -151,6 +151,7 @@ func exchangeCodeForToken(code, codeVerifier string) (*TokenResponse, error) {
 		"client_id":     clientID,
 		"code_verifier": codeVerifier,
 		"code":          code,
+		"grant_type":    "authorization_code",
 	}
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
