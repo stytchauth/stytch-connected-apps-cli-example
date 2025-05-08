@@ -1,42 +1,24 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/stytchauth/stytch-connected-apps-cli-example/utils"
 )
 
 var (
 	clientID     string
 	projectID    string
-	redirectURI  = "http://localhost:8080/callback"
+	redirectURI  = "http://127.0.0.1:8080/callback"
 	authorizeURL = "http://localhost:3000/oauth/authorize"
 )
-
-type TokenResponse struct {
-	AccessToken  string `json:"access_token"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
-	TokenType    string `json:"token_type"`
-	IDToken      string `json:"id_token"`
-	RequestID    string `json:"request_id"`
-	StatusCode   int    `json:"status_code"`
-}
 
 // generateCodeVerifier generates a random code verifier for PKCE
 func generateCodeVerifier() (string, error) {
@@ -107,7 +89,7 @@ var authCmd = &cobra.Command{
 		fmt.Println("Opening browser for authentication...")
 
 		// Open the browser with the auth URL
-		err = openBrowser(authURL)
+		err = utils.OpenBrowser(authURL)
 		if err != nil {
 			fmt.Println("Please open the following URL in your browser:", authURL)
 		}
@@ -126,7 +108,7 @@ var authCmd = &cobra.Command{
 		}
 
 		// Exchange the code for a token
-		token, err := exchangeCodeForToken(code, codeVerifier)
+		token, err := utils.ExchangeCodeForToken(clientID, projectID, code, codeVerifier)
 		if err != nil {
 			fmt.Printf("Error exchanging code for token: %v\n", err)
 			return
@@ -136,81 +118,15 @@ var authCmd = &cobra.Command{
 		fmt.Printf("Token expires in: %d seconds\n", token.ExpiresIn)
 		fmt.Printf("Refresh token: %s\n", token.RefreshToken)
 
+		// Save the tokens to keyring
+		utils.SaveToken(token.AccessToken, utils.AccessToken)
+		utils.SaveToken(token.RefreshToken, utils.RefreshToken)
+
 		// Shutdown the server
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		server.Shutdown(ctx)
 	},
-}
-
-func exchangeCodeForToken(code, codeVerifier string) (*TokenResponse, error) {
-	url := fmt.Sprintf("https://test.stytch.com/v1/public/%s/oauth2/token", projectID)
-
-	// Prepare the request body
-	body := map[string]string{
-		"client_id":     clientID,
-		"code_verifier": codeVerifier,
-		"code":          code,
-		"grant_type":    "authorization_code",
-	}
-	jsonBody, err := json.Marshal(body)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling request body: %v", err)
-	}
-
-	// Create the request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Set headers
-	req.Header.Set("Content-Type", "application/json")
-
-	// Send the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error making request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Read the response
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading response: %v", err)
-	}
-
-	// Parse the response
-	var tokenResp TokenResponse
-	if err := json.Unmarshal(respBody, &tokenResp); err != nil {
-		return nil, fmt.Errorf("error parsing response: %v", err)
-	}
-
-	if tokenResp.StatusCode != 200 {
-		return nil, fmt.Errorf("error from API: %s", string(respBody))
-	}
-
-	return &tokenResp, nil
-}
-
-func openBrowser(url string) error {
-	var cmd string
-	var args []string
-
-	switch runtime.GOOS {
-	case "darwin":
-		cmd = "open"
-		args = []string{url}
-	case "windows":
-		cmd = "rundll32"
-		args = []string{"url.dll,FileProtocolHandler", url}
-	default: // linux, freebsd, etc.
-		cmd = "xdg-open"
-		args = []string{url}
-	}
-
-	return exec.Command(cmd, args...).Start()
 }
 
 func init() {
