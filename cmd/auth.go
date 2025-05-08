@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -23,7 +20,7 @@ import (
 var (
 	clientID     string
 	projectID    string
-	redirectURI  = "http://localhost:8080/callback"
+	redirectURI  = "http://127.0.0.1:8080/callback"
 	authorizeURL = "http://localhost:3000/oauth/authorize"
 )
 
