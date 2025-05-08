@@ -2,7 +2,7 @@
 
 This is a simple CLI application that demonstrates how to authenticate with a Stytch-connected application using OAuth 2.0 with PKCE.
 
-Relevant guide in Stytch docs coming soon!
+This example repo has a companion guide in Stytch docs [here](https://stytch.com/docs/guides/connected-apps/cli-app)! We highly recommend utilizing the guide in tandem with this repo. 
 
 ## Prerequisites
 
