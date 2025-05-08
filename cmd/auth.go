@@ -16,7 +16,6 @@ import (
 var (
 	clientID     string
 	projectID    string
-	redirectURI  = "http://127.0.0.1:8080/callback"
 	authorizeURL = "http://localhost:3000/oauth/authorize"
 )
 
@@ -45,6 +44,10 @@ var authCmd = &cobra.Command{
 	Use:   "auth",
 	Short: "Authenticate with your Stytch-connected account",
 	Run: func(cmd *cobra.Command, args []string) {
+		// Get a free port for the callback server
+		port := utils.GetOpenPort()
+		redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
+
 		// Generate PKCE values
 		codeVerifier, err := generateCodeVerifier()
 		if err != nil {
@@ -55,7 +58,7 @@ var authCmd = &cobra.Command{
 
 		// Start local server to receive the callback
 		server := &http.Server{
-			Addr: ":8080",
+			Addr: fmt.Sprintf(":%d", port),
 		}
 
 		// Channel to receive the auth code
