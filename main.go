@@ -1,6 +1,6 @@
 package main
 
-import "github.com/stytchauth/stytch-b2b-nextjs-connectedapps-example/cmd"
+import "github.com/stytchauth/stytch-connected-apps-cli-example/cmd"
 
 func main() {
 	cmd.Execute()

@@ -11,7 +11,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "stytch-b2b-nextjs-connectedapps-example",
+	Use:   "stytch-connected-apps-cli-example",
 	Short: "An example CLI app powered by Stytch Connected Apps",
 }
 
@@ -29,7 +29,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.stytch-b2b-nextjs-connectedapps-example.yaml)")
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.stytch-connected-apps-cli-example.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

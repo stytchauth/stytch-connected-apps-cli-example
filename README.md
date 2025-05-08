@@ -14,8 +14,8 @@ Relevant guide in Stytch docs coming soon!
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/stytchauth/stytch-b2b-nextjs-connectedapps-example.git
-cd stytch-b2b-nextjs-connectedapps-example
+git clone https://github.com/stytchauth/stytch-connected-apps-cli-example.git
+cd stytch-connected-apps-cli-example
 ```
 
 2. Install dependencies:

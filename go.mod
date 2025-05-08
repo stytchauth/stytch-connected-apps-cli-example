@@ -1,4 +1,4 @@
-module github.com/stytchauth/stytch-b2b-nextjs-connectedapps-example
+module github.com/stytchauth/stytch-connected-apps-cli-example
 
 go 1.22.1
 
