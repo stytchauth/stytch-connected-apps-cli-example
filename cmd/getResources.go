@@ -13,6 +13,7 @@ import (
 var getResourcesCmd = &cobra.Command{
 	Use:   "get_resources",
 	Short: "Gets /api/resources, passing in a connected apps access token",
+	Long:  "Gets /api/resources served by the stytch-react-example app, passing in a connected apps access token.",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get access token from keyring
 		access_token, _ := utils.LoadToken(utils.AccessToken)
